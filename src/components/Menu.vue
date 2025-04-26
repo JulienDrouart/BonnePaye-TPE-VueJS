@@ -54,9 +54,6 @@
       <template v-else-if="currentScreen === 'lotAleatoire'">
         <LotAleatoire @loterie-result="handleLoterie"></LotAleatoire>
       </template>
-      <template v-else>
-        <p>Écran inconnu</p>
-      </template>
     </template>
   </div>
 </template>
@@ -68,6 +65,9 @@ import nouvellePartie from './NouvellePartie.vue'
 
 function handleLoterie({ joueur, argent }) {
   playerMoney.value[joueur] += argent
+  setTimeout(() => {
+    currentScreen.value = 'none'
+  }, 2000)
 }
 
 function resetPartie() {
