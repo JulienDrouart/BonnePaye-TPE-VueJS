@@ -16,7 +16,7 @@ const emit = defineEmits(['loterie-result'])
 
 function calcul() {
   joueur.value = Math.floor(Math.random() * 2) + 1
-  argent.value = Math.floor(Math.random() * (1500 - 100 + 1)) + 100
+  argent.value = 1200
   loterieDone.value = true
   emit('loterie-result', { joueur: joueur.value, argent: argent.value })
 }

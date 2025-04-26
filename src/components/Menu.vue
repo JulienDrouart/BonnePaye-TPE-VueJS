@@ -52,7 +52,7 @@
         <Loterie @loterie-result="handleLoterie"></Loterie>
       </template>
       <template v-else-if="currentScreen === 'lotAleatoire'">
-        <p>Écran Lot aléatoire</p>
+        <LotAleatoire @loterie-result="handleLoterie"></LotAleatoire>
       </template>
       <template v-else>
         <p>Écran inconnu</p>
@@ -62,6 +62,7 @@
 </template>
 
 <script setup>
+import LotAleatoire from './LotAleatoire.vue'
 import Loterie from './Loterie.vue'
 import nouvellePartie from './NouvellePartie.vue'
 
