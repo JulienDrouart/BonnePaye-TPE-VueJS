@@ -5,7 +5,7 @@ import Menu from './components/Menu.vue'
 <template>
   <header>
     <div class="wrapper">
-      <Menu msg="Menu" />
+      <Menu msg="La bonne paye TPE" />
     </div>
   </header>
 </template>

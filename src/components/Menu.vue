@@ -36,10 +36,7 @@
     <br />
     Argent J2 : {{ playerMoney[2] }} €
     <br />
-    Argent J3 : {{ playerMoney[3] }} €
-    <br />
-    Argent J4 : {{ playerMoney[4] }} €
-    <br />
+
     Cagnotte : {{ cagnotte }} €
   </div>
 
@@ -48,30 +45,36 @@
       <nouvellePartie></nouvellePartie>
     </template>
     <template v-else>
-      <template v-switch="currentScreen">
-        <template v-case="'cagnotte'">
-          <p>Écran Cagnotte</p>
-        </template>
-        <template v-case="'loterie'">
-          <p>Écran Loterie</p>
-        </template>
-        <template v-case="'lotAleatoire'">
-          <p>Écran Lot aléatoire</p>
-        </template>
-        <template v-default>
-          <p>Écran inconnu</p>
-        </template>
+      <template v-if="currentScreen === 'cagnotte'">
+        <p>Écran Cagnotte</p>
+      </template>
+      <template v-else-if="currentScreen === 'loterie'">
+        <Loterie @loterie-result="handleLoterie"></Loterie>
+      </template>
+      <template v-else-if="currentScreen === 'lotAleatoire'">
+        <p>Écran Lot aléatoire</p>
+      </template>
+      <template v-else>
+        <p>Écran inconnu</p>
       </template>
     </template>
   </div>
 </template>
 
 <script setup>
+import Loterie from './Loterie.vue'
 import nouvellePartie from './NouvellePartie.vue'
 
+function handleLoterie({ joueur, argent }) {
+  playerMoney.value[joueur] += argent
+}
+
 function resetPartie() {
-  playerMoney.value = { 1: 3500, 2: 3500, 3: 3500, 4: 3500 }
-  cagnotte.value = 0
+  if (confirm('Êtes-vous sûr de vouloir réinitialiser la partie ?')) {
+    currentPlayer.value = 1
+    playerMoney.value = { 1: 3500, 2: 3500 }
+    cagnotte.value = 0
+  }
 }
 
 function setCurrentScreen(screen) {
@@ -94,7 +97,7 @@ import { ref } from 'vue'
 
 const currentPlayer = ref(1)
 const cagnotte = ref(0)
-const playerMoney = ref({ 1: 3500, 2: 3500, 3: 3500, 4: 3500 })
+const playerMoney = ref({ 1: 3500, 2: 3500 })
 const currentScreen = ref('none')
 </script>
 
