@@ -20,6 +20,11 @@
       </li>
       <li>
         <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+          Prêt
+        </button>
+      </li>
+      <li>
+        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
           Historique
         </button>
       </li>
@@ -37,9 +42,16 @@
         </button>
       </li>
     </ul>
-    Argent J1 : {{ playerMoney[1] }} €
-    <br />
-    Argent J2 : {{ playerMoney[2] }} €
+    <template v-if="playerMoney[1] >= playerMoney[2]">
+      Argent J1 : {{ playerMoney[1] }} €
+      <br />
+      Argent J2 : {{ playerMoney[2] }} €
+    </template>
+    <template v-else>
+      Argent J2 : {{ playerMoney[2] }} €
+      <br />
+      Argent J1 : {{ playerMoney[1] }} €
+    </template>
     <br />
 
     Cagnotte : {{ cagnotte }} €
