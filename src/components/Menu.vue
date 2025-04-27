@@ -19,6 +19,11 @@
         </button>
       </li>
       <li>
+        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+          Historique
+        </button>
+      </li>
+      <li>
         <button
           @click="setCurrentScreen('lotAleatoire')"
           style="font-size: 0.8rem; padding: 4px 8px"
@@ -46,7 +51,7 @@
     </template>
     <template v-else>
       <template v-if="currentScreen === 'cagnotte'">
-        <p>Écran Cagnotte</p>
+        <Cagnotte @retirer-cagnotte="retirerCagnotte" @ajout-cagnotte="handleCagnotte"></Cagnotte>
       </template>
       <template v-else-if="currentScreen === 'loterie'">
         <Loterie @loterie-result="handleLoterie"></Loterie>
@@ -62,9 +67,27 @@
 import LotAleatoire from './LotAleatoire.vue'
 import Loterie from './Loterie.vue'
 import nouvellePartie from './NouvellePartie.vue'
+import Cagnotte from './Cagnotte.vue'
 
 function handleLoterie({ joueur, argent }) {
   playerMoney.value[joueur] += argent
+  setTimeout(() => {
+    currentScreen.value = 'none'
+  }, 2000)
+}
+
+function retirerCagnotte(joueur) {
+  playerMoney.value[joueur] += cagnotte.value
+  cagnotte.value = 0
+  setTimeout(() => {
+    currentScreen.value = 'none'
+  }, 2000)
+}
+
+function handleCagnotte({ valeur, joueur }) {
+  playerMoney.value[joueur] -= valeur
+  cagnotte.value += parseInt(valeur, 10)
+
   setTimeout(() => {
     currentScreen.value = 'none'
   }, 2000)
