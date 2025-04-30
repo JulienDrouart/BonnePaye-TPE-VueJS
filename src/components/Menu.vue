@@ -107,8 +107,8 @@ function handleCagnotte({ valeur, joueur }) {
 
 function resetPartie() {
   if (confirm('Êtes-vous sûr de vouloir réinitialiser la partie ?')) {
-    moneyStore.playerMoney.value = { 1: 3500, 2: 3500 }
-    moneyStore.cagnotte.value = 0
+    moneyStore.playerMoney = { 1: 3500, 2: 3500 }
+    moneyStore.cagnotte = 0
   }
 }
 
