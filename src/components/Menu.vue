@@ -3,23 +3,18 @@
     <h1 class="green">{{ msg }}</h1>
     <ul>
       <li>
-        <button @click="handleDebutPartie()" style="font-size: 0.8rem; padding: 4px 8px">
-          Début de partie
-        </button>
-      </li>
-      <li>
         <button @click="setCurrentScreen('cagnotte')" style="font-size: 0.8rem; padding: 4px 8px">
           Cagnotte
         </button>
       </li>
       <li>
         <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
-          Loterie
+          Changement de tour
         </button>
       </li>
       <li>
-        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
-          Prêt
+        <button @click="handleDebutPartie()" style="font-size: 0.8rem; padding: 4px 8px">
+          Début de partie
         </button>
       </li>
       <li>
@@ -33,6 +28,16 @@
           style="font-size: 0.8rem; padding: 4px 8px"
         >
           Lot aléatoire
+        </button>
+      </li>
+      <li>
+        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+          Loterie
+        </button>
+      </li>
+      <li>
+        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+          Prêt
         </button>
       </li>
       <li>
