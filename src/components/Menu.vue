@@ -1,7 +1,6 @@
 <template>
   <div class="partOne">
     <h1 class="green">{{ msg }}</h1>
-    {{ currentScreen }}
     <ul>
       <li>
         <button @click="handleDebutPartie()" style="font-size: 0.8rem; padding: 4px 8px">
@@ -43,14 +42,26 @@
       </li>
     </ul>
     <template v-if="moneyStore.playerMoney[1] >= moneyStore.playerMoney[2]">
-      Argent J1 : {{ moneyStore.playerMoney[1] }} €
+      Argent J1 :
+      <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
+        {{ moneyStore.playerMoney[1] }} €
+      </span>
       <br />
-      Argent J2 : {{ moneyStore.playerMoney[2] }} €
+      Argent J2 :
+      <span :style="{ color: moneyStore.playerMoney[2] <= 0 ? 'red' : 'inherit' }">
+        {{ moneyStore.playerMoney[2] }} €
+      </span>
     </template>
     <template v-else>
-      Argent J2 : {{ moneyStore.playerMoney[2] }} €
+      Argent J2 :
+      <span :style="{ color: moneyStore.playerMoney[2] <= 0 ? 'red' : 'inherit' }">
+        {{ moneyStore.playerMoney[2] }} €
+      </span>
       <br />
-      Argent J1 : {{ moneyStore.playerMoney[1] }} €
+      Argent J1 :
+      <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
+        {{ moneyStore.playerMoney[1] }} €
+      </span>
     </template>
     <br />
 
@@ -70,6 +81,9 @@
       </template>
       <template v-else-if="currentScreen === 'lotAleatoire'">
         <LotAleatoire @loterie-result="handleLoterie"></LotAleatoire>
+      </template>
+      <template v-else-if="currentScreen === 'virprev'">
+        <VirementPrelevement @vir-prev="handleVirPrev"></VirementPrelevement>
       </template>
     </template>
   </div>
@@ -121,6 +135,17 @@ function handleDebutPartie() {
   setCurrentScreen('nouvellePartie')
 }
 
+function handleVirPrev({ joueur, value, action }) {
+  if (action === 'retrait') {
+    moneyStore.playerMoney[joueur] -= parseInt(value)
+  } else if (action === 'prelevement') {
+    moneyStore.playerMoney[joueur] += parseInt(value)
+  }
+  setTimeout(() => {
+    currentScreen.value = 'none'
+  }, 500)
+}
+
 defineProps({
   msg: {
     type: String,
@@ -130,6 +155,7 @@ defineProps({
 
 import { ref } from 'vue'
 import { save } from '@/store/save'
+import VirementPrelevement from './VirementPrelevement.vue'
 
 const moneyStore = save()
 
