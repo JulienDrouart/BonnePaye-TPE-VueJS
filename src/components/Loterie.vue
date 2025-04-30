@@ -1,5 +1,5 @@
 <template>
-  <button @click="calcul()">Loterie</button>
+  <button id="loterie" @click="calcul()">Loterie</button>
   <div v-if="loterieDone">
     <p>Le joueur {{ joueur }} à remporté {{ argent }} € à la loterie !</p>
   </div>

@@ -42,19 +42,19 @@
         </button>
       </li>
     </ul>
-    <template v-if="playerMoney[1] >= playerMoney[2]">
-      Argent J1 : {{ playerMoney[1] }} €
+    <template v-if="moneyStore.playerMoney[1] >= moneyStore.playerMoney[2]">
+      Argent J1 : {{ moneyStore.playerMoney[1] }} €
       <br />
-      Argent J2 : {{ playerMoney[2] }} €
+      Argent J2 : {{ moneyStore.playerMoney[2] }} €
     </template>
     <template v-else>
-      Argent J2 : {{ playerMoney[2] }} €
+      Argent J2 : {{ moneyStore.playerMoney[2] }} €
       <br />
-      Argent J1 : {{ playerMoney[1] }} €
+      Argent J1 : {{ moneyStore.playerMoney[1] }} €
     </template>
     <br />
 
-    Cagnotte : {{ cagnotte }} €
+    Cagnotte : {{ moneyStore.cagnotte }} €
   </div>
 
   <div class="partTwo">
@@ -82,23 +82,23 @@ import nouvellePartie from './NouvellePartie.vue'
 import Cagnotte from './Cagnotte.vue'
 
 function handleLoterie({ joueur, argent }) {
-  playerMoney.value[joueur] += argent
+  moneyStore.playerMoney[joueur] += argent
   setTimeout(() => {
     currentScreen.value = 'none'
   }, 2000)
 }
 
 function retirerCagnotte(joueur) {
-  playerMoney.value[joueur] += cagnotte.value
-  cagnotte.value = 0
+  moneyStore.playerMoney[joueur] += moneyStore.cagnotte.value
+  moneyStore.cagnotte = 0
   setTimeout(() => {
     currentScreen.value = 'none'
   }, 2000)
 }
 
 function handleCagnotte({ valeur, joueur }) {
-  playerMoney.value[joueur] -= valeur
-  cagnotte.value += parseInt(valeur, 10)
+  moneyStore.playerMoney[joueur] -= valeur
+  moneyStore.cagnotte += parseInt(valeur, 10)
 
   setTimeout(() => {
     currentScreen.value = 'none'
@@ -107,9 +107,8 @@ function handleCagnotte({ valeur, joueur }) {
 
 function resetPartie() {
   if (confirm('Êtes-vous sûr de vouloir réinitialiser la partie ?')) {
-    currentPlayer.value = 1
-    playerMoney.value = { 1: 3500, 2: 3500 }
-    cagnotte.value = 0
+    moneyStore.playerMoney.value = { 1: 3500, 2: 3500 }
+    moneyStore.cagnotte.value = 0
   }
 }
 
@@ -130,10 +129,12 @@ defineProps({
 })
 
 import { ref } from 'vue'
+import { save } from '@/store/save'
 
-const currentPlayer = ref(1)
-const cagnotte = ref(0)
-const playerMoney = ref({ 1: 3500, 2: 3500 })
+const moneyStore = save()
+
+console.log('moneyStore', moneyStore)
+
 const currentScreen = ref('none')
 </script>
 
