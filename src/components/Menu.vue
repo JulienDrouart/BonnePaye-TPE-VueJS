@@ -51,7 +51,7 @@
     <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
       {{ moneyStore.playerMoney[1] }} €
     </span>
-    <template v-if="moneyStore.pret[1] > 0">Prêt : {{ moneyStore.pret[1] }} €</template><br />
+    <template v-if="moneyStore.pret[1] > 0"><br />Prêt : {{ moneyStore.pret[1] }} €</template><br />
     Tour : {{ moneyStore.tour[1] }}<br />
     <br />
 
@@ -59,7 +59,7 @@
     <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
       {{ moneyStore.playerMoney[2] }} €
     </span>
-    <template v-if="moneyStore.pret[2] > 0">Prêt : {{ moneyStore.pret[2] }} €</template><br />
+    <template v-if="moneyStore.pret[2] > 0"><br />Prêt : {{ moneyStore.pret[2] }} €</template><br />
     Tour : {{ moneyStore.tour[2] }}<br />
     <br /><br />
 
@@ -87,7 +87,7 @@
         <Historique></Historique>
       </template>
       <template v-else-if="currentScreen === 'pret'">
-        <Pret @action="handlePret"></Pret>
+        <Pret @pret="handlePret"></Pret>
       </template>
       <template v-else-if="currentScreen === 'changeTour'">
         <ChangementTour @action="handleChangementTour"></ChangementTour>
@@ -104,6 +104,17 @@ import Cagnotte from './Cagnotte.vue'
 import Historique from './Historique.vue'
 import Pret from './Pret.vue'
 
+function handlePret({ valeur, joueur, action }) {
+  if (action === 'askPret') {
+    moneyStore.pret[joueur] += parseInt(valeur, 10)
+  } else if (action === 'refundPret') {
+    alert('temporarily disabled')
+  }
+  setTimeout(() => {
+    currentScreen.value = 'none'
+  }, 2000)
+}
+
 function handleLoterie({ joueur, argent }) {
   moneyStore.playerMoney[joueur] += argent
   moneyStore.history.push({
@@ -115,11 +126,12 @@ function handleLoterie({ joueur, argent }) {
   }, 2000)
 }
 
-function handlePret() {}
-
 function handleChangementTour(joueur) {
-  console.log(joueur.joueur)
   moneyStore.tour[joueur] += 1
+  const pret = moneyStore.pret[joueur]
+  if (pret > 0) {
+    moneyStore.playerMoney[joueur] -= pret / 10
+  }
   moneyStore.playerMoney[joueur] += 3500
   moneyStore.history.push({
     heure: new Date().toLocaleTimeString(),
