@@ -8,7 +8,7 @@
         </button>
       </li>
       <li>
-        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+        <button @click="setCurrentScreen('changeTour')" style="font-size: 0.8rem; padding: 4px 8px">
           Changement de tour
         </button>
       </li>
@@ -18,7 +18,7 @@
         </button>
       </li>
       <li>
-        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+        <button @click="setCurrentScreen('historique')" style="font-size: 0.8rem; padding: 4px 8px">
           Historique
         </button>
       </li>
@@ -36,7 +36,7 @@
         </button>
       </li>
       <li>
-        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+        <button @click="setCurrentScreen('pret')" style="font-size: 0.8rem; padding: 4px 8px">
           Prêt
         </button>
       </li>
@@ -46,29 +46,22 @@
         </button>
       </li>
     </ul>
-    <template v-if="moneyStore.playerMoney[1] >= moneyStore.playerMoney[2]">
-      Argent J1 :
-      <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
-        {{ moneyStore.playerMoney[1] }} €
-      </span>
-      <br />
-      Argent J2 :
-      <span :style="{ color: moneyStore.playerMoney[2] <= 0 ? 'red' : 'inherit' }">
-        {{ moneyStore.playerMoney[2] }} €
-      </span>
-    </template>
-    <template v-else>
-      Argent J2 :
-      <span :style="{ color: moneyStore.playerMoney[2] <= 0 ? 'red' : 'inherit' }">
-        {{ moneyStore.playerMoney[2] }} €
-      </span>
-      <br />
-      Argent J1 :
-      <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
-        {{ moneyStore.playerMoney[1] }} €
-      </span>
-    </template>
+
+    Joueur 1 :<br />
+    <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
+      {{ moneyStore.playerMoney[1] }} €
+    </span>
+    <template v-if="moneyStore.pret[1] > 0">Prêt : {{ moneyStore.pret[1] }} €</template><br />
+    Tour : {{ moneyStore.tour[1] }}<br />
     <br />
+
+    Joueur 2 :<br />
+    <span :style="{ color: moneyStore.playerMoney[1] <= 0 ? 'red' : 'inherit' }">
+      {{ moneyStore.playerMoney[2] }} €
+    </span>
+    <template v-if="moneyStore.pret[2] > 0">Prêt : {{ moneyStore.pret[2] }} €</template><br />
+    Tour : {{ moneyStore.tour[2] }}<br />
+    <br /><br />
 
     Cagnotte : {{ moneyStore.cagnotte }} €
   </div>
@@ -90,6 +83,15 @@
       <template v-else-if="currentScreen === 'virprev'">
         <VirementPrelevement @vir-prev="handleVirPrev"></VirementPrelevement>
       </template>
+      <template v-else-if="currentScreen === 'historique'">
+        <Historique></Historique>
+      </template>
+      <template v-else-if="currentScreen === 'pret'">
+        <Pret @action="handlePret"></Pret>
+      </template>
+      <template v-else-if="currentScreen === 'changeTour'">
+        <ChangementTour @action="handleChangementTour"></ChangementTour>
+      </template>
     </template>
   </div>
 </template>
@@ -99,9 +101,30 @@ import LotAleatoire from './LotAleatoire.vue'
 import Loterie from './Loterie.vue'
 import nouvellePartie from './NouvellePartie.vue'
 import Cagnotte from './Cagnotte.vue'
+import Historique from './Historique.vue'
+import Pret from './Pret.vue'
 
 function handleLoterie({ joueur, argent }) {
   moneyStore.playerMoney[joueur] += argent
+  moneyStore.history.push({
+    heure: new Date().toLocaleTimeString(),
+    message: `Le joueur ${joueur} a remporté ${argent}€ à la loterie`,
+  })
+  setTimeout(() => {
+    currentScreen.value = 'none'
+  }, 2000)
+}
+
+function handlePret() {}
+
+function handleChangementTour(joueur) {
+  console.log(joueur.joueur)
+  moneyStore.tour[joueur] += 1
+  moneyStore.playerMoney[joueur] += 3500
+  moneyStore.history.push({
+    heure: new Date().toLocaleTimeString(),
+    message: `Le joueur ${joueur} a pris un tour`,
+  })
   setTimeout(() => {
     currentScreen.value = 'none'
   }, 2000)
@@ -128,6 +151,9 @@ function resetPartie() {
   if (confirm('Êtes-vous sûr de vouloir réinitialiser la partie ?')) {
     moneyStore.playerMoney = { 1: 3500, 2: 3500 }
     moneyStore.cagnotte = 0
+    moneyStore.pret = { 1: 0, 2: 0 }
+    moneyStore.tour = { 1: 0, 2: 0 }
+    moneyStore.history = []
   }
 }
 
@@ -161,10 +187,9 @@ defineProps({
 import { ref } from 'vue'
 import { save } from '@/store/save'
 import VirementPrelevement from './VirementPrelevement.vue'
+import ChangementTour from './ChangementTour.vue'
 
 const moneyStore = save()
-
-console.log('moneyStore', moneyStore)
 
 const currentScreen = ref('none')
 </script>
