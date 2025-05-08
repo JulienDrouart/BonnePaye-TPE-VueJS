@@ -3,10 +3,9 @@ import Menu from './components/Menu.vue'
 </script>
 
 <template>
+  <Menu msg="La bonne paye TPE"></Menu>
   <header>
-    <div class="wrapper">
-      <Menu msg="La bonne paye TPE" />
-    </div>
+    <div class="wrapper"></div>
   </header>
 </template>
 
