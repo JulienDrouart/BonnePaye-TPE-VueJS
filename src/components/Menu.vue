@@ -5,7 +5,7 @@
       <li>
         <button
           @click="setCurrentScreen('cagnotte')"
-          style="font-size: 0.8rem; padding: 4px 8px; background-color: red"
+          style="font-size: 0.8rem; padding: 4px 8px; background-color: red; border: 2px solid red"
         >
           Cagnotte
         </button>
@@ -36,7 +36,12 @@
       <li>
         <button
           @click="setCurrentScreen('loterie')"
-          style="font-size: 0.8rem; padding: 4px 8px; background-color: blue"
+          style="
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            background-color: blue;
+            border: 2px solid blue;
+          "
         >
           Loterie
         </button>
