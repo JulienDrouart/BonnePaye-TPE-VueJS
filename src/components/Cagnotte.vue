@@ -12,9 +12,9 @@
     >
       2
     </button>
-    <button :disabled="!playerSelected" @click="emit('retirer-cagnotte', joueur)">Retirer</button>
+    <button :disabled="cagnotteValue <= 0 || !playerSelected" @click="valider">Cagnotter</button>
     <input v-model="cagnotteValue" type="text" placeholder="Entrez une valeur" />
-    <button :disabled="cagnotteValue <= 0 || !playerSelected" @click="valider">Valider</button>
+    <button :disabled="!playerSelected" @click="retirer">Vider</button>
   </div>
 </template>
 
@@ -33,5 +33,10 @@ function selectPlayer(playerNumber) {
 function valider() {
   emit('ajout-cagnotte', { valeur: cagnotteValue.value, joueur: joueur.value })
 }
+
+function retirer() {
+  emit('retirer-cagnotte', joueur.value)
+}
+
 const emit = defineEmits(['ajout-cagnotte', 'retirer-cagnotte'])
 </script>

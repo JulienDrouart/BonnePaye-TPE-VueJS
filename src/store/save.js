@@ -6,7 +6,7 @@ export const save = defineStore(
     const cagnotte = ref(0)
     const playerMoney = ref({ 1: 3500, 2: 3500 })
     const pret = ref({ 1: 0, 2: 0 })
-    const tour = ref({ 1: 0, 2: 0 })
+    const tour = ref({ 1: 1, 2: 1 })
     const history = ref([])
     return {
       cagnotte: cagnotte,

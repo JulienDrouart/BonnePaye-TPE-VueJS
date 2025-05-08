@@ -3,7 +3,10 @@
     <h1 class="green">{{ msg }}</h1>
     <ul>
       <li>
-        <button @click="setCurrentScreen('cagnotte')" style="font-size: 0.8rem; padding: 4px 8px">
+        <button
+          @click="setCurrentScreen('cagnotte')"
+          style="font-size: 0.8rem; padding: 4px 8px; background-color: red"
+        >
           Cagnotte
         </button>
       </li>
@@ -31,7 +34,10 @@
         </button>
       </li>
       <li>
-        <button @click="setCurrentScreen('loterie')" style="font-size: 0.8rem; padding: 4px 8px">
+        <button
+          @click="setCurrentScreen('loterie')"
+          style="font-size: 0.8rem; padding: 4px 8px; background-color: blue"
+        >
           Loterie
         </button>
       </li>
@@ -84,7 +90,7 @@
         <VirementPrelevement @vir-prev="handleVirPrev"></VirementPrelevement>
       </template>
       <template v-else-if="currentScreen === 'historique'">
-        <Historique></Historique>
+        <Historique :history="moneyStore.history"></Historique>
       </template>
       <template v-else-if="currentScreen === 'pret'">
         <Pret @pret="handlePret"></Pret>
@@ -108,10 +114,18 @@ function handlePret({ valeur, joueur, action }) {
   if (action === 'askPret') {
     moneyStore.pret[joueur] += parseInt(valeur, 10)
     moneyStore.playerMoney[joueur] += parseInt(valeur, 10)
+    moneyStore.history.push({
+      heure: new Date().toLocaleTimeString(),
+      message: `Le joueur ${joueur} a pris un prêt de ${valeur}€`,
+    })
   } else if (action === 'refundPret') {
-    const refund = parseInt(valeur, 10) * 1.1
+    const refund = Math.round(parseInt(valeur, 10) * 1.1)
     moneyStore.playerMoney[joueur] -= refund
     moneyStore.pret[joueur] -= parseInt(valeur, 10)
+    moneyStore.history.push({
+      heure: new Date().toLocaleTimeString(),
+      message: `Le joueur ${joueur} a remboursé un prêt de ${refund}€`,
+    })
   }
   setTimeout(() => {
     currentScreen.value = 'none'
@@ -138,7 +152,7 @@ function handleChangementTour(joueur) {
   moneyStore.playerMoney[joueur] += 3500
   moneyStore.history.push({
     heure: new Date().toLocaleTimeString(),
-    message: `Le joueur ${joueur} a pris un tour`,
+    message: `Le joueur ${joueur} passe au tour ${moneyStore.tour[joueur]}`,
   })
   setTimeout(() => {
     currentScreen.value = 'none'
@@ -146,8 +160,13 @@ function handleChangementTour(joueur) {
 }
 
 function retirerCagnotte(joueur) {
-  moneyStore.playerMoney[joueur] += moneyStore.cagnotte.value
+  moneyStore.playerMoney[joueur] += moneyStore.cagnotte
+  moneyStore.history.push({
+    heure: new Date().toLocaleTimeString(),
+    message: `Le joueur ${joueur} a retiré la cagnotte de ${moneyStore.cagnotte}€`,
+  })
   moneyStore.cagnotte = 0
+
   setTimeout(() => {
     currentScreen.value = 'none'
   }, 2000)
@@ -156,6 +175,10 @@ function retirerCagnotte(joueur) {
 function handleCagnotte({ valeur, joueur }) {
   moneyStore.playerMoney[joueur] -= valeur
   moneyStore.cagnotte += parseInt(valeur, 10)
+  moneyStore.history.push({
+    heure: new Date().toLocaleTimeString(),
+    message: `Le joueur ${joueur} a mis ${valeur}€ dans la cagnotte`,
+  })
 
   setTimeout(() => {
     currentScreen.value = 'none'
@@ -167,8 +190,12 @@ function resetPartie() {
     moneyStore.playerMoney = { 1: 3500, 2: 3500 }
     moneyStore.cagnotte = 0
     moneyStore.pret = { 1: 0, 2: 0 }
-    moneyStore.tour = { 1: 0, 2: 0 }
+    moneyStore.tour = { 1: 1, 2: 1 }
     moneyStore.history = []
+    moneyStore.history.push({
+      heure: new Date().toLocaleTimeString(),
+      message: `Début de la partie`,
+    })
   }
 }
 
@@ -184,8 +211,16 @@ function handleDebutPartie() {
 function handleVirPrev({ joueur, value, action }) {
   if (action === 'retrait') {
     moneyStore.playerMoney[joueur] -= parseInt(value)
+    moneyStore.history.push({
+      heure: new Date().toLocaleTimeString(),
+      message: `Le joueur ${joueur} a retiré ${value}€`,
+    })
   } else if (action === 'prelevement') {
     moneyStore.playerMoney[joueur] += parseInt(value)
+    moneyStore.history.push({
+      heure: new Date().toLocaleTimeString(),
+      message: `Le joueur ${joueur} a prélevé ${value}€`,
+    })
   }
   setTimeout(() => {
     currentScreen.value = 'none'
