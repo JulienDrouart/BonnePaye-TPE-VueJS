@@ -107,6 +107,7 @@ import Pret from './Pret.vue'
 function handlePret({ valeur, joueur, action }) {
   if (action === 'askPret') {
     moneyStore.pret[joueur] += parseInt(valeur, 10)
+    moneyStore.playerMoney[joueur] += parseInt(valeur, 10)
   } else if (action === 'refundPret') {
     const refund = parseInt(valeur, 10) * 1.1
     moneyStore.playerMoney[joueur] -= refund
