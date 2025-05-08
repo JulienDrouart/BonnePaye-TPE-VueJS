@@ -108,7 +108,9 @@ function handlePret({ valeur, joueur, action }) {
   if (action === 'askPret') {
     moneyStore.pret[joueur] += parseInt(valeur, 10)
   } else if (action === 'refundPret') {
-    alert('temporarily disabled')
+    const refund = parseInt(valeur, 10) * 1.1
+    moneyStore.playerMoney[joueur] -= refund
+    moneyStore.pret[joueur] -= parseInt(valeur, 10)
   }
   setTimeout(() => {
     currentScreen.value = 'none'
